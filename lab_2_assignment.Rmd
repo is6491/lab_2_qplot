@@ -1,0 +1,32 @@
+---
+title: 'Lab 2: Assignment'
+author: "Jeremy Morris"
+date: "2/20/2019"
+output: 
+  html_document: 
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Objectives
+
+* Learn the basics of using the qplot function
+* Go from data acquisition to visualization
+
+### Assignment
+
+* Review the in-class lab found in this project.
+* Find a data set you find interesting.
+* Create a visualization using the `qplot` function in an R Markdown document.
+* Write a short description explaining what you have done and why it is interesting.
+* Upload the HTML file to Canvas.
+
+### Notes on the assignment requirements
+
+* This assignment requires exactly one visualization. You will lose 50% of remaining points for each additional visualization included. As an example, an assignment with two visualizations will be eligible for 50% of the points. An assignment with three will have a max score of 25% of the available points.
+* Assignments that do not use `qplot` will recieve 0 points.
+* Your grade will be reduced by 10% if your explination of the plot does not match what the plot represents.
+* 0 points will be awarded for answers not using R Markdown.

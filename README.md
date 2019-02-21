@@ -1,1 +1,2 @@
-# lab_2_qplot
+# Lab 2 : Intro to ggplot with qplot
+qplot is a function within the ggplot2 library that creates simplified data visualizations. In this lab we will introduce qplot and end by pointing out where we need to graduate to using ggplot.

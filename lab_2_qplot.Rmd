@@ -1,0 +1,192 @@
+---
+title: "Lab 2 - Intro to ggplot, Using the qplot function"
+author: "Jeremy Morris"
+date: "2/12/2019"
+output: 
+  html_document: 
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+
+# Introduction to ggplot2 - part 1
+
+### About ggplot2
+> "ggplot2 is an R package for producing statistical, or data, graphics, but it is unlike most other graphics packages because it has a deep underlying grammar. This grammar, based on the Grammar of Graphics (Wilkinson, 2005), is composed of a set of independent components that can be composed in many different ways. [..] Plots can be built up iteratively and edited later. A carefully chosen set of defaults means that most of the time you can produce a publication-quality graphic in seconds, but if you do have special formatting requirements, a comprehensive theming system makes it easy to do what you want. [..] ggplot2 is designed to work in a layered fashion, starting with a layer showing the raw data then adding layers of annotation and statistical summaries. [..]"
+
+H.Wickham, ggplot2, Use R, DOI 10.1007/978-0-387-98141_1, © Springer Science+Business Media, LLC 2009
+
+
+# Introduction to ggplot2 - focus on qplot ####
+
+The `ggplot2` library is very flexible and easy to use once you have learned the basics of how it works. There are many ways to put together a visualization using the `ggplot` function which we will cover in the next lab. In this lab, we introduce the `qplot` function which is built to mimic the base R `plot` function. Like the base plot function, there are limits to what the `qplot` function will do. At the end of the lab we will show where the `qplot` function starts to produce undesired output.
+
+From the qplot help file:
+
+> qplot is a shortcut designed to be familiar if you're used to base plot(). It's a convenient wrapper for creating a number of different types of plots using a consistent calling scheme. It's great for allowing you to produce plots quickly, but I highly recommend learning ggplot() as it makes it easier to create complex graphics.
+
+We'll work with two datasets:
+
+1. diamonds: data regarding diamond quality
+2. mtcars: data regarding cars and fuel efficiency
+
+### diamonds
+```{r}
+as.tibble(diamonds)
+```
+
+### mtcars
+```{r mtcars}
+as.tibble(mtcars)
+```
+
+***
+
+## Creating plots
+
+The following code produces a pretty standard histogram using the `qplot` function. The various parts of the function call are as follows.
+
+* `clarity` - this is one of the variables from the diamonds data set.
+* `data=diamonds` - here we tell the function which dataframe we will use to generate the plot.
+* `fill=cut` - the fill parameter adds an additional series to the plot that will be "filled in" with colors depending on the values in the variable specified (`cut` in this case).
+* `geom=bar` - "geom" stands for "geometric object" and tells `qplot` what kind of chart we're creating (a bar chart in this case).
+
+One thing not immediately obvious about this call is what kind of aggregation will be done on the data. When no aggregation is specified for a bar chart, all `ggplot2` functions will perform a count as the aggregation method. That's how the following code generates a histogram.
+
+```{r qplot_hist}
+qplot(clarity, data=diamonds, fill=cut, geom="bar")
+```
+
+If you wanted to do the aggregation explicitely, you could do the following (still using `qplot` for the chart). In this case, we use the `weight` parameter to specify the y-axis. Note, this produces the same output as the prior example.
+
+```{r qplot_calc_hist}
+diamond_hist <- diamonds %>% group_by(clarity,cut) %>% summarise(n=n())
+qplot(x=clarity,weight=n,fill=cut,data=diamond_hist,geom='bar',stat='identity')
+```
+
+The same chart can be generated using `ggplot` as you can see below. We will cover in more detail how this is done in next week's lab.
+```{r ggplot_hist}
+ggplot(diamonds, aes(clarity, fill=cut)) + 
+    geom_bar()
+```
+
+## How to Use `qplot`
+
+To create a scatterplot, you do not need to specify a "geom" in the call. "geom" is set to 'point' by default. The following call sets `x=wt` and `y=mpg`.
+```{r qplot_scaatter}
+qplot(wt, mpg, data=mtcars)
+```
+
+`qplot` allows you to transform input data with functions. Note that the transformations are specified in the axis titles.
+```{r qplot_transform}
+qplot(log(wt), mpg - 10, data=mtcars)
+```
+
+Add aesthetic mapping (i.e. color), recall that `qsec` is an attribute in the mtcars dataset indicating the car's quarter-mile time. Also note that `qplot` recognizes that `qsec` is a quantitative variable and uses a continuous color scale. In the second example, we've used the `as.factor` function to force `qplot` to make `cyl` categorical.
+```{r qplot_aes}
+qplot(wt, mpg, data=mtcars, color=qsec)
+qplot(wt, mpg, data=mtcars, color=as.factor(cyl))
+```
+
+Change size of points. In the following example, we use a static size for the points.
+```{r qplot_size_static}
+qplot(wt, mpg, data=mtcars, color=qsec, size=5)
+```
+
+In this example, we vary the size off the points based off of the number of cylinders.
+```{r qplot_size_var}
+qplot(wt, mpg, data=mtcars, color=qsec, size=cyl) 
+```
+
+Use alpha blending changes the transparency of each of the points. This can be useful in some cases, especially if you have a large number of points.
+```{r qplot_alpha}
+qplot(wt, mpg, data=mtcars, alpha=qsec, size=5)
+```
+
+The following example show how to use the following aesthetic mappings.
+
+* `shape` - controls the shape of each point.
+* `size` - controls the size of each shape. This can be static or variable if given a column of data.
+* `color` - colors in the points. Note that this is different than `fill` which controls the interior color of an object.
+
+```{r qplot_aes2}
+qplot(wt, mpg, data=mtcars, shape=factor(cyl), size=5)
+qplot(wt, mpg, data=mtcars, size=qsec)
+qplot(wt, mpg, data=mtcars, size=qsec, color=factor(carb))
+qplot(wt, mpg, data=mtcars, size=qsec, shape=factor(cyl))
+qplot(wt, mpg, data=mtcars, size=qsec, shape=factor(cyl), color=factor(cyl)) 
+```
+
+Bar-plot
+```{r qplot_bar}
+qplot(factor(cyl), data=mtcars)
+```
+
+Flip plot by 90°. Here we actually blend the use of `qplot` and a `ggplot` function.
+```{r qplot_bar_flip}
+qplot(factor(cyl), data=mtcars) + coord_flip()
+```
+
+The following shows the difference between fill/color bars. Note that `fill` shades the interior of the object while `colour` modifies the line around the object. Also, the author of the `ggplot2` library is from New Zealand, hence the odd spelling of the word 'colour'. The more americanized version 'color' is also available.
+```{r qplot_bar_color}
+qplot(factor(cyl), data=mtcars, geom="bar", fill=factor(cyl))
+qplot(factor(cyl), data=mtcars, geom="bar", colour=factor(cyl))
+```
+
+The following shows that if you set `fill` to a different variable, you will get a stacked bar chart. Grouped bar charts can also be created if you're into that sort of thing.
+```{r qplot_bar_fill}
+qplot(factor(cyl), data=mtcars, geom="bar", fill=factor(gear))
+```
+
+
+The histogram geom allows you to change the binwidths for more precision.
+```{r qplot_hist_bins}
+qplot(carat, data=diamonds, geom="histogram", binwidth=0.1)
+qplot(carat, data=diamonds, geom="histogram", binwidth=0.01)
+```
+
+An array of geoms can be passed to the geom parameter creating more sophisticated plots.
+```{r qplot_combine}
+qplot(wt, mpg, data=mtcars, geom="point")
+qplot(wt, mpg, data=mtcars, geom="smooth")
+qplot(wt, mpg, data=mtcars, geom=c("point", "smooth"))
+```
+
+Tweaking the smooth plot ("loess"-method: polynomial surface using local fitting)
+```{r qplot_smooth}
+qplot(wt, mpg, data=mtcars, geom="smooth")
+```
+
+Removing standard error
+```{r qplot_smooth_se}
+qplot(wt, mpg, data=mtcars, geom="smooth", se=FALSE)
+```
+
+Making line more or less wiggly (span: 0-1)
+```{r qplot_smooth_span}
+qplot(wt, mpg, data=mtcars, geom="smooth", span=0.6)
+qplot(wt, mpg, data=mtcars, geom="smooth", span=1)
+```
+
+Using linear modelling
+```{r qplot_lm}
+qplot(wt, mpg, data=mtcars, geom="smooth", method="lm")
+```
+
+Sometimes qplot doesn't give us what we're looking for
+```{r qplot_fail}
+qplot(wt, mpg, data=mtcars, color=factor(cyl), geom=c("smooth", "point"))
+```
+
+Need to upgrade to `ggplot`
+```{r ggplot}
+ggplot() +
+  geom_point(data=mtcars, aes(x=wt, y=mpg, colour=factor(cyl))) +
+  geom_smooth(data=mtcars, aes(x=wt, y=mpg))
+```
+
+`ggplot2` official documentation
+HTTP://docs.ggplot2.org/current/
