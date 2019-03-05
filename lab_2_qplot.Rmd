@@ -22,7 +22,7 @@ H.Wickham, ggplot2, Use R, DOI 10.1007/978-0-387-98141_1, © Springer Science+Bu
 
 # Introduction to ggplot2 - focus on qplot ####
 
-The `ggplot2` library is very flexible and easy to use once you have learned the basics of how it works. There are many ways to put together a visualization using the `ggplot` function which we will cover in the next lab. In this lab, we introduce the `qplot` function which is built to mimic the base R `plot` function. Like the base plot function, there are limits to what the `qplot` function will do. At the end of the lab we will show where the `qplot` function starts to produce undesired output.
+The `ggplot2` library is very flexible and easy to use once you have learned the basics of how it works. There are many ways to put together a visualization using the `ggplot` function which we will cover in the next lab. In this lab, we introduce the `qplot` function which is built to mimic the base R `plot` function. Like the base plot function, there are limits to what the `qplot` function will do. We will focus on creating visualizations with different chart types and adjusting various options to customize those visualizations. At the end of the lab we will show where the `qplot` function starts to produce undesired output.
 
 From the qplot help file:
 
@@ -47,6 +47,17 @@ as.tibble(mtcars)
 
 ## Creating plots
 
+The main purpose of this discussion is to cover the main options that you will use when creating a plot with `qplot`. We will cover the following topics.
+
+* How to choose a chart type
+* How to specify what goes on the axes
+* How to specify which data will be used
+* How to add basic options to the chart
+
+### Chart types
+
+Chart types are specified using the `geom` parameter. We will see this in more detail when we get to the more advanced `ggplot` call, but a `geom` is short for a geometric object. When using `qplot`, this just tells the charting engine what to draw. There are two types
+
 The following code produces a pretty standard histogram using the `qplot` function. The various parts of the function call are as follows.
 
 * `clarity` - this is one of the variables from the diamonds data set.
@@ -64,7 +75,7 @@ If you wanted to do the aggregation explicitely, you could do the following (sti
 
 ```{r qplot_calc_hist}
 diamond_hist <- diamonds %>% group_by(clarity,cut) %>% summarise(n=n())
-qplot(x=clarity,weight=n,fill=cut,data=diamond_hist,geom='bar',stat='identity')
+qplot(x=clarity,y=n,fill=cut,data=diamond_hist,geom='col')
 ```
 
 The same chart can be generated using `ggplot` as you can see below. We will cover in more detail how this is done in next week's lab.
@@ -76,7 +87,10 @@ ggplot(diamonds, aes(clarity, fill=cut)) +
 ## How to Use `qplot`
 
 To create a scatterplot, you do not need to specify a "geom" in the call. "geom" is set to 'point' by default. The following call sets `x=wt` and `y=mpg`.
-```{r qplot_scaatter}
+
+Note: By default, `qplot` will generate a bar plot if only one measure is specified and a scatterplot if two are specified. The `geom` parameter must be used if another chart type is desired.
+
+```{r qplot_scatter}
 qplot(wt, mpg, data=mtcars)
 ```
 
