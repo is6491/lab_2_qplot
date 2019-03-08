@@ -49,55 +49,110 @@ as.tibble(mtcars)
 
 The main purpose of this discussion is to cover the main options that you will use when creating a plot with `qplot`. We will cover the following topics.
 
-* How to choose a chart type
-* How to specify what goes on the axes
-* How to specify which data will be used
-* How to add basic options to the chart
+* Basics about the `qplot` function
+  * How to specify what goes on the axes
+  * How to specify which data will be used
+  * How to specify the chart type
+* How to change the chart type
+* How to add some basic customizations to a chart
+
+### Basic qplot functionality
+
+The following code produces a pretty standard bar chart using the `qplot` function. The various parts of the function call are as follows.
+
+* `clarity` - this is one of the variables from the diamonds data set and functions as the variable of interest.
+* `data=diamonds` - the data set to be used when generating the plot.
+* `geom=bar` - "geom" stands for "geometric object" and tells `qplot` what kind of chart we're creating (a bar chart in this case).
+
+```{r qplot_hist}
+qplot(clarity, data=diamonds, geom="bar")
+```
+
+The "bar" geometric object is special in that it nearly always will require some level of aggregation. If you prefer to be specific about the aggregation you are doing, it is best to use the "col" geom as follows. In this example, I have specified each of the options. Note that the "col" geom requires both an x and a y parameter where the "bar" geom only expects an x-axis.
+
+```{r qplot_calc_hist}
+diamond_hist <- diamonds %>% group_by(clarity) %>% summarise(n=n())
+qplot(x=clarity,y=n,data=diamond_hist,geom='col')
+```
+
 
 ### Chart types
 
-Chart types are specified using the `geom` parameter. We will see this in more detail when we get to the more advanced `ggplot` call, but a `geom` is short for a geometric object. When using `qplot`, this just tells the charting engine what to draw. There are two types
+Chart types are specified using the `geom` parameter as seen above. When using `qplot`, this just tells the charting engine what to draw. There are many types of geometric objects, we'll cover a subset of the most common.
 
-The following code produces a pretty standard histogram using the `qplot` function. The various parts of the function call are as follows.
+A complete list of geoms can be found [here](https://ggplot2.tidyverse.org/reference/) in the "Layer: geoms" section and, to a degree, in the "Layer: stats" section.
 
-* `clarity` - this is one of the variables from the diamonds data set.
-* `data=diamonds` - here we tell the function which dataframe we will use to generate the plot.
-* `fill=cut` - the fill parameter adds an additional series to the plot that will be "filled in" with colors depending on the values in the variable specified (`cut` in this case).
-* `geom=bar` - "geom" stands for "geometric object" and tells `qplot` what kind of chart we're creating (a bar chart in this case).
+We will cover the following geoms in this section (noting that bar and col have been already been covered).
 
-One thing not immediately obvious about this call is what kind of aggregation will be done on the data. When no aggregation is specified for a bar chart, all `ggplot2` functions will perform a count as the aggregation method. That's how the following code generates a histogram.
+* geom_point - scatterplot
+* geom_jitter - scatterplot with random noise added
+* geom_boxplot - boxplot
+* geom_density - density plot
+* geom_line - line chart
 
-```{r qplot_hist}
-qplot(clarity, data=diamonds, fill=cut, geom="bar")
-```
-
-If you wanted to do the aggregation explicitely, you could do the following (still using `qplot` for the chart). In this case, we use the `weight` parameter to specify the y-axis. Note, this produces the same output as the prior example.
-
-```{r qplot_calc_hist}
-diamond_hist <- diamonds %>% group_by(clarity,cut) %>% summarise(n=n())
-qplot(x=clarity,y=n,fill=cut,data=diamond_hist,geom='col')
-```
-
-The same chart can be generated using `ggplot` as you can see below. We will cover in more detail how this is done in next week's lab.
-```{r ggplot_hist}
-ggplot(diamonds, aes(clarity, fill=cut)) + 
-    geom_bar()
-```
-
-## How to Use `qplot`
-
-To create a scatterplot, you do not need to specify a "geom" in the call. "geom" is set to 'point' by default. The following call sets `x=wt` and `y=mpg`.
-
-Note: By default, `qplot` will generate a bar plot if only one measure is specified and a scatterplot if two are specified. The `geom` parameter must be used if another chart type is desired.
+#### geom_point
+A scatterplot can be created by using `geom="point"` or by leaving the option out of the `qplot` call as in the example below.
 
 ```{r qplot_scatter}
 qplot(wt, mpg, data=mtcars)
 ```
 
-`qplot` allows you to transform input data with functions. Note that the transformations are specified in the axis titles.
-```{r qplot_transform}
-qplot(log(wt), mpg - 10, data=mtcars)
+You can produce the same output by being more specific as in the following example.
+
+```{r qplot_scatter2}
+qplot(x=wt, y=mpg, data=mtcars, geom='point')
 ```
+
+#### geom_jitter
+Jitter plots are often used when one of the axes is categorical. First, we'll look at a standard scatterplot.
+
+```{r geom_point_density}
+qplot(x=clarity,y=table,data=diamonds,geom='point')
+```
+
+This chart does not give us a good view of the full density of points as points layerd on top of each other don't look any different. By changing this to a jitter plot we get a better view of the density of the data points.
+
+```{r geom_jitter}
+qplot(x=clarity,y=table,data=diamonds,geom='jitter')
+```
+
+#### geom_boxplot
+Box plots may not be too common in business presentations, however, I like them a lot so I will cover them quickly here. The boxplot draws a box around the middle half of the data. The bottom of the box starts at the 25th percentile and the top at the 75th with a line in the middle for the 50th (or median). A line is used for data points within the inter-quartile range (IQR) and individual dots are used outside 1.5*IQR. I think they are an excellent way to visualize the density of data points. You can see how it makes the chart a lot cleaner than in the case of the jitter plot.
+
+```{r geom_boxplot}
+qplot(x=clarity,y=table,data=diamonds,geom='boxplot')
+```
+
+
+#### geom_density
+Also not terribly common in business presentations but very useful for understanding your data. The density only requires an x parameter and requires you to use a fill or facet to visualize multiple dimensions (more on those in future labs). The following shows a single density plot.
+
+```{r geom_density_single}
+qplot(x=depth,data=diamonds,geom='density')
+```
+
+#### geom_line
+Standard line chart. This chart requires an x and a y parameter but also allows you to perform aggregations if you really want to. I prefer to pre-aggregate data as it is often much clearer to someone reading through the code. By someone, I mean my future self who is in some ways smarter than my current self. Line charts are most often used with a date value in the x-axis. Otherwise, there should be some reason that you are connecting the lines together. Here, we'll use the NYC flight data since it includes a date component.
+
+```{r geom_line}
+flights_by_day <- nycflights13::flights %>% 
+  mutate(dt=as.Date(paste(year,month,day,sep='-'),format='%Y-%m-%d')) %>%
+  group_by(dt) %>% summarise(n=n())
+
+qplot(x=dt,y=n,data=flights_by_day,geom='line')
+```
+
+As a little bonus, you'll notice that the data is highly seasonal within the week. You can apply various transforms to get the data to a different time grain as you'll see in the following example. Here, I use the `cut` function to truncate or round the dates to the nearest week.
+
+```{r geom_line_week}
+flights_by_week <- flights_by_day %>% mutate(dt_week=as.Date(cut(dt,breaks='week'))) %>%
+  group_by(dt_week) %>% summarise(n=sum(n))
+
+qplot(x=dt_week,y=n,data=flights_by_week,geom='line')
+```
+
+
+### Adding customizations to the chart
 
 Add aesthetic mapping (i.e. color), recall that `qsec` is an attribute in the mtcars dataset indicating the car's quarter-mile time. Also note that `qplot` recognizes that `qsec` is a quantitative variable and uses a continuous color scale. In the second example, we've used the `as.factor` function to force `qplot` to make `cyl` categorical.
 ```{r qplot_aes}
