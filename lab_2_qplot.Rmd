@@ -1,7 +1,6 @@
 ---
 title: "Lab 2 - Intro to ggplot, Using the qplot function"
 author: "Jeremy Morris"
-date: "2/12/2019"
 output: 
   html_document: 
     theme: cosmo
