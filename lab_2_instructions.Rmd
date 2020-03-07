@@ -35,4 +35,4 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Work locally
 If you would prefer to work locally, you can fork the following repository from my GitHub account. Note that I will not be able to see your assignment if you work this way. Go to the following url and fork the repo if you would like to work locally.
 
-https://github.com/jeremydmorris/lab_2_qplot
+https://github.com/is6491/lab_2_qplot
