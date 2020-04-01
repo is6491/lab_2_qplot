@@ -35,12 +35,12 @@ We'll work with two datasets:
 
 ### diamonds
 ```{r}
-as.tibble(diamonds)
+as_tibble(diamonds)
 ```
 
 ### mtcars
 ```{r mtcars}
-as.tibble(mtcars)
+as_tibble(mtcars)
 ```
 
 ***
