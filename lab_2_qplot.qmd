@@ -1,12 +1,20 @@
 ---
-title: "Lab 2 - Intro to ggplot, Using the qplot function"
+title: "Lab 2 - Intro to ggplot, Using qplot"
 author: "Jeremy Morris"
-output: 
-  html_document: 
-    theme: cosmo
+affiliation-title: "University of Utah"
+date: last-modified
+title-block-style: default
+title-block-banner: true
+format: 
+  html:
+      embed-resources: true
+      theme: flatly
+      code-block-bg: true
+      code-block-border-left: "#31BAE9"
+      highlight-style: printing
 ---
-
-```{r setup, include=FALSE}
+```{r setup}
+#| include: false
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(tidyverse)

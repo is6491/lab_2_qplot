@@ -1,0 +1,32 @@
+---
+title: "Lab 2 - Template"
+author: "YOUR NAME GOES HERE"
+affiliation-title: "University of Utah"
+date: last-modified
+title-block-style: default
+title-block-banner: true
+format: 
+  html:
+      embed-resources: true
+      theme: flatly
+      code-block-bg: true
+      code-block-border-left: "#31BAE9"
+      highlight-style: printing
+execute: 
+  echo: true
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+library(ggplot2)
+```
+
+## Plot Description
+
+Some text goes here describing your plot.
+
+## Plot
+
+```{r myplot}
+```
