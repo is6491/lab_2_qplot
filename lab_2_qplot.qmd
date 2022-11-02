@@ -12,10 +12,11 @@ format:
       code-block-bg: true
       code-block-border-left: "#31BAE9"
       highlight-style: printing
+execute:
+    echo: true
 ---
 ```{r setup}
 #| include: false
-knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(tidyverse)
 ```
