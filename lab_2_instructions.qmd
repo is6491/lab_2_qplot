@@ -1,14 +1,20 @@
 ---
-title: 'Lab 2 Instructions'
+title: "Lab 2 - Instructions"
 author: "Jeremy Morris"
-output: 
-  html_document: 
-    theme: cosmo
+affiliation-title: "University of Utah"
+date: last-modified
+title-block-style: default
+title-block-banner: true
+format: 
+  html:
+      embed-resources: true
+      theme: flatly
+      code-block-bg: true
+      code-block-border-left: "#31BAE9"
+      highlight-style: printing
+execute: 
+  echo: true
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ### Objectives
 
@@ -20,19 +26,19 @@ knitr::opts_chunk$set(echo = TRUE)
 * Review the in-class lab found in this project.
 * Find a data set you think is interesting.
 * Create a visualization using the `qplot` function in an R Markdown document. 
-    * Use the provided template `lab_2_template.Rmd` if desired.
+    * Use the provided template `lab_2_template.qmd` if desired.
 * Write a short description explaining what you have done and why it is interesting.
 * Upload the HTML file to Canvas.
 
 ### Notes
 
 * This assignment requires exactly one visualization. You will lose 50% of remaining points for each additional visualization included. As an example, an assignment with two visualizations will be eligible for 50% of the points. An assignment with three will have a max score of 25% of the available points.
-* Assignments that do not use `qplot` will recieve 0 points.
-* Your grade will be reduced by 10% if your explination of the plot does not match what the plot represents.
+* Assignments that do not use `qplot` will receive 0 points.
+* Your grade will be reduced by 10% if your explanation of the plot does not match what the plot represents.
 * 0 points will be awarded for answers not using R Markdown.
 * 2 points will be deducted if you do not put your name on the final product.
 
 ### Work locally
 If you would prefer to work locally, you can fork the following repository from my GitHub account. Note that I will not be able to see your assignment if you work this way. Go to the following url and fork the repo if you would like to work locally.
 
-https://github.com/is6491/lab_2_qplot
+[https://github.com/is6491/lab_2_qplot](https://github.com/is6491/lab_2_qplot)
